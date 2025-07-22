@@ -11,7 +11,8 @@
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.0/css/all.css">
 	<link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel="stylesheet">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-	<script src="script.js"></script>
+	<script src="script.js"></script> 
+	<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 	<meta http-equiv="Content-Security-Policy"
 	        content="default-src 'self';
 	                 script-src 'self' https://*.github.io https://github.com https://ajax.googleapis.com https://www.youtube-nocookie.com;
@@ -177,5 +178,17 @@
 		  <a href="" target="_blank"> Ride Splits.</a>
      </footer>
   </div>
+	<script>
+		if (window.netlifyIdentity) {
+		window.netlifyIdentity.on("init", (user) => {
+			if (!user) {
+			window.netlifyIdentity.on("login", () => {
+				document.location.href = "/admin/";
+			});
+			}
+		});
+		}
+	</script>
+  
   </body>
 </html>
