@@ -42,6 +42,8 @@
 						<li><a class="nav-link" href="#team">Team</a></li>
 						<li><a class="nav-link" href="#social">Socials</a></li>
 						<li><a class="nav-link" href="#contact">Contact</a></li>
+						<li><a class="nav-link" href="#newsletter">Newsletter</a></li>
+
 					</ul>
 					<!--Mainly for mobile-->
 					<div class="hamburger">
@@ -195,6 +197,21 @@
 					</p>
 				  </div>
 				  
+				  <div id="newsletter">
+					<h3>Join Our Newsletter</h3>
+					<form name="newsletter" method="POST" data-netlify="true" onsubmit="return handleNewsletterSubmit(event)">
+					  <input type="hidden" name="form-name" value="newsletter">
+					  <p>
+						<label>Email: <input type="email" name="email" required></label>
+					  </p>
+					  <p>
+						<button type="submit">Subscribe</button>
+					  </p>
+					</form>
+					<p id="newsletter-confirmation" style="display: none; color: green; font-weight: bold;">
+					  Thanks for subscribing!
+					</p>
+				  </div>
 
 			</main>
 	  <footer class="copyright">© 2025 
@@ -234,6 +251,26 @@
 		  return false;
 		}
 	</script>
+	<script>
+		function handleNewsletterSubmit(event) {
+		  event.preventDefault();
+		  const form = event.target;
+		  fetch("/", {
+			method: "POST",
+			headers: { "Content-Type": "application/x-www-form-urlencoded" },
+			body: new URLSearchParams(new FormData(form)).toString()
+		  })
+		  .then(() => {
+			form.style.display = "none";
+			document.getElementById("newsletter-confirmation").style.display = "block";
+		  })
+		  .catch((error) => {
+			alert("Subscription failed: " + error);
+		  });
+	  
+		  return false;
+		}
+	  </script>
 	  
   </body>
 </html>
