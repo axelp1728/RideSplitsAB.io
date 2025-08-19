@@ -1,109 +1,93 @@
 /**
- * HTTP Cloud Functions for RideSplits site APIs
- * - POST /api/contact    -> { name, email, message }
- * - POST /api/subscribe  -> { email }
- * - GET  /api/faq        -> simple JSON list
+ * Backend for RideSplits forms
+ * - POST /api/contact      -> saves a contact message
+ * - POST /api/subscribe    -> upserts a newsletter subscriber
+ * - GET  /api/faq          -> returns a simple FAQ payload (placeholder)
  */
 
-const { setGlobalOptions } = require("firebase-functions");
-const { onRequest } = require("firebase-functions/https");
-const logger = require("firebase-functions/logger");
+const { setGlobalOptions } = require('firebase-functions');
+const functions = require('firebase-functions');
+const admin = require('firebase-admin');
 
-const admin = require("firebase-admin");
-admin.initializeApp();
+// Configure function runtime
+setGlobalOptions({ region: 'us-central1', maxInstances: 10 });
+
+// Initialize Admin SDK once
+try { admin.app(); } catch { admin.initializeApp(); }
 const db = admin.firestore();
 
-setGlobalOptions({ maxInstances: 10 });
-
-// ---- small CORS helper (allows your static site to call these endpoints) ----
-function withCors(handler) {
+// very small CORS helper (allows any origin; tighten later if you want)
+function withCORS(handler) {
   return async (req, res) => {
-    res.set("Access-Control-Allow-Origin", "*");
-    res.set("Access-Control-Allow-Headers", "Content-Type");
-    res.set("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
-
-    if (req.method === "OPTIONS") {
-      return res.status(204).send("");
-    }
+    res.set('Access-Control-Allow-Origin', '*');
+    res.set('Access-Control-Allow-Headers', 'Content-Type');
+    res.set('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+    if (req.method === 'OPTIONS') return res.status(204).end();
     return handler(req, res);
   };
 }
 
-// ------------------- /api/contact -------------------
-exports.contact = onRequest(
-  withCors(async (req, res) => {
-    if (req.method !== "POST") {
-      return res.status(405).json({ error: "Method Not Allowed" });
-    }
+// ---------- CONTACT ----------
+exports.contact = functions.https.onRequest(
+  withCORS(async (req, res) => {
+    if (req.method !== 'POST') return res.status(405).json({ error: 'Use POST' });
 
-    const { name = "", email = "", message = "" } = req.body || {};
+    const { name = '', email = '', topic = 'General', message = '' } = (req.body || {});
     if (!name || !email || !message) {
-      return res.status(400).json({ error: "name, email, and message are required" });
+      return res.status(400).json({ error: 'Missing required fields (name, email, message).' });
     }
 
-    try {
-      const docRef = await db.collection("contacts").add({
-        name,
-        email: email.toLowerCase().trim(),
-        message,
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      });
+    const doc = {
+      name: String(name).trim(),
+      email: String(email).trim().toLowerCase(),
+      topic: String(topic || 'General').trim(),
+      message: String(message).trim(),
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      userAgent: req.get('user-agent') || '',
+      ip: req.headers['x-forwarded-for'] || req.socket?.remoteAddress || '',
+    };
 
-      logger.info("Contact saved", { id: docRef.id, email });
-      return res.json({ ok: true, id: docRef.id });
-    } catch (err) {
-      logger.error("Failed to save contact", err);
-      return res.status(500).json({ ok: false, error: "Internal error" });
-    }
+    await db.collection('contactMessages').add(doc);
+    return res.json({ ok: true });
   })
 );
 
-// ------------------- /api/subscribe -------------------
-exports.subscribe = onRequest(
-  withCors(async (req, res) => {
-    if (req.method !== "POST") {
-      return res.status(405).json({ error: "Method Not Allowed" });
+// ---------- SUBSCRIBE ----------
+exports.subscribe = functions.https.onRequest(
+  withCORS(async (req, res) => {
+    if (req.method !== 'POST') return res.status(405).json({ error: 'Use POST' });
+
+    const { email = '' } = (req.body || {});
+    const clean = String(email).trim().toLowerCase();
+    if (!clean || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clean)) {
+      return res.status(400).json({ error: 'Valid email required.' });
     }
 
-    const { email = "" } = req.body || {};
-    if (!email) {
-      return res.status(400).json({ error: "email is required" });
-    }
+    // use the email (sanitized) as the doc id to dedupe
+    const id = clean.replace(/[^\w.-]+/g, '_');
+    await db.collection('newsletterSubscribers').doc(id).set(
+      {
+        email: clean,
+        source: 'site',
+        subscribed: true,
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      },
+      { merge: true }
+    );
 
-    try {
-      // Use email as doc id to avoid duplicates
-      const id = email.toLowerCase().trim();
-      await db.collection("subscribers").doc(id).set(
-        {
-          email: id,
-          subscribedAt: admin.firestore.FieldValue.serverTimestamp(),
-        },
-        { merge: true }
-      );
-
-      logger.info("Subscribed", { email: id });
-      return res.json({ ok: true, email: id });
-    } catch (err) {
-      logger.error("Subscribe failed", err);
-      return res.status(500).json({ ok: false, error: "Internal error" });
-    }
+    return res.json({ ok: true });
   })
 );
 
-// ------------------- /api/faq -------------------
-exports.faq = onRequest(
-  withCors(async (req, res) => {
-    if (req.method !== "GET") {
-      return res.status(405).json({ error: "Method Not Allowed" });
-    }
-
-    // Quick static example. Later you could read from Firestore (collection "faq").
-    const items = [
-      { q: "What is RideSplits?", a: "A peer-to-peer platform to share rides and reduce costs." },
-      { q: "How do I request a ride?", a: "Use the app to set your pickup and drop-off, then confirm." },
-      { q: "Is it eco-friendly?", a: "Yes—sharing rides reduces emissions and traffic." },
-    ];
-
-    return res.json({ ok: true, items });
+// ---------- FAQ (placeholder) ----------
+exports.faq = functions.https.onRequest(
+  withCORS(async (_req, res) => {
+    return res.json({
+      ok: true,
+      items: [
+        { q: 'What is RideSplits?', a: 'A community-driven ride platform focused on reliability.' },
+        { q: 'Where is it available?', a: 'We’re expanding; check the app for current cities.' },
+      ],
+    });
   })
 );
