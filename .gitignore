@@ -4,3 +4,9 @@ dist/
 node_modules/
 .DS_Store
 _site
+.DS_Store
+_site
+node_modules
+functions/node_modules
+.parcel-cache
+dist
