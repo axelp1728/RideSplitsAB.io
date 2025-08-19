@@ -10,3 +10,4 @@ node_modules
 functions/node_modules
 .parcel-cache
 dist
+.firebase

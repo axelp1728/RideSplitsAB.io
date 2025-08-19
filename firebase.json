@@ -1,0 +1,16 @@
+{
+  "hosting": {
+    "public": ".",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**",
+      "functions/**"
+    ],
+    "rewrites": [
+      { "source": "/api/contact",   "function": "contact" },
+      { "source": "/api/subscribe", "function": "subscribe" },
+      { "source": "/api/faq",       "function": "faq" }
+    ]
+  }
+}
