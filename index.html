@@ -334,8 +334,40 @@
           </div>
         </ul>
       </div>
-              
+      <div class="page-section" style="max-width:720px;margin:24px auto 8px;">
+        <form id="newsletter-form" class="flex gap-2">
+          <input name="email" type="email" placeholder="Your email" required class="flex-1 border p-2 rounded">
+          <button type="submit" class="px-4 py-2 rounded bg-green-600 text-white">Subscribe</button>
+        </form>
+        <p id="newsletter-status" class="mt-2 text-sm"></p>
+      </div>       
   </footer>
+  <script type="module">
+    async function postJSON(u, d) {
+      const r = await fetch(u, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(d)
+      });
+      if (!r.ok) throw new Error(await r.text());
+      return r.json();
+    }
+    const nf = document.querySelector("#newsletter-form");
+    const ns = document.querySelector("#newsletter-status");
+    nf?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      ns.textContent = "Subscribing…";
+      try {
+        const email = new FormData(nf).get("email");
+        await postJSON("/api/subscribe", { email });
+        nf.reset();
+        ns.textContent = "You're subscribed!";
+      } catch (err) {
+        console.error(err);
+        ns.textContent = "Subscription failed.";
+      }
+    });
+  </script>
 </body>
 
 </html>

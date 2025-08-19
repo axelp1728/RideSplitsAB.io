@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact – RideSplits</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.7/tailwind.min.css"
+    integrity="sha512-y6ZMKFUQrn+UUEVoqYe8ApScqbjuhjqzTuwUMEGMDuhS2niI8KA3vhH2LenreqJXQS+iIXVTRL2iaNfJbDNA1Q=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="flex flex-row justify-center">
+    <div class='navbar page-wide-section'>
+      <a href="https://www.ridesplits.com" class="rs-logo">
+        <img src='./images/android-chrome-192x192.png' class='rs-business-logo'>
+      </a>
+      <ul class='navlinks-header'>
+        <li><a href="index.html">HOME</a></li>
+        <li><a href="about.html">ABOUT</a></li>
+        <li><a href="team.html">TEAM</a></li>
+        <li><a href="contact.html">CONTACT</a></li>
+      </ul>
+    </div>
+    <div style='height: 40px;'></div>
+  </header>
+
+  <main class="page-section" style="max-width: 720px; margin: 32px auto;">
+    <h1 class="text-3xl font-bold mb-4">Contact Us</h1>
+    <p class="mb-6">Questions, partnerships, or media? Drop us a note below.</p>
+
+    <form id="contact-form" class="space-y-4">
+      <input name="name" placeholder="Your name" class="border p-3 w-full rounded" required>
+      <input name="email" type="email" placeholder="Your email" class="border p-3 w-full rounded" required>
+      <textarea name="message" placeholder="Message" class="border p-3 w-full rounded h-40" required></textarea>
+      <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Send</button>
+    </form>
+    <p id="contact-status" class="mt-2 text-sm"></p>
+  </main>
+
+  <footer class='footer'>
+    <div class='footnote page-section'>
+      <ul class='list-style'>
+        <div class="footer-icons-right-group">
+          <li>&copy; 2025 RideSplits, Inc.</li>
+        </div>
+      </ul>
+    </div>
+  </footer>
+
+  <script type="module">
+    async function postJSON(u, d) {
+      const r = await fetch(u, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(d)
+      });
+      if (!r.ok) throw new Error(await r.text());
+      return r.json();
+    }
+    const f = document.querySelector("#contact-form");
+    const s = document.querySelector("#contact-status");
+    f?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      s.textContent = "Sending…";
+      try {
+        const data = Object.fromEntries(new FormData(f).entries());
+        await postJSON("/api/contact", data);
+        f.reset();
+        s.textContent = "Thanks! We’ll be in touch.";
+      } catch (err) {
+        console.error(err);
+        s.textContent = "Sorry, something went wrong.";
+      }
+    });
+  </script>
+</body>
+</html>
