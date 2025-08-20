@@ -2,96 +2,121 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Contact – RideSplits</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.7/tailwind.min.css" crossorigin="anonymous" />
+
+  <link rel="preload" href="style.css" as="style" />
   <link rel="stylesheet" href="style.css" />
-  <link rel="shortcut icon" href="./images/favicon.ico" />
 </head>
-<body class="bg-white text-gray-900">
-  <!-- Header (copy of your site header) -->
+<body>
+  <!-- Header / Nav -->
   <header class="flex flex-row justify-center">
-    <div class='navbar page-wide-section'>
+    <div class="navbar page-wide-section">
       <a href="index.html" class="rs-logo">
-        <img src="./images/android-chrome-192x192.png" class="rs-business-logo" alt="RideSplits logo">
+        <img src="./images/android-chrome-192x192.png" class="rs-business-logo" alt="RideSplits" />
       </a>
       <div class="searchbox">
-        <svg width='16' height='16' style='fill:#27AE60' viewBox='0 0 16 16'><path d="M8 14A6 6 0 1 1 8 2a6 6 0 0 1 0 12zm0-4a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path></svg>
-        <input type='text' placeholder='' class='nav-input-style'>
-        <label class='nav-location-label'><span>Where are you going?</span></label>
-        <svg width='16' height='16' fill=#27AE60 viewBox='0 0 16 16'><path d="M7.298 10.313a3.172 3.172 0 0 1-2.776-3.514 3.145 3.145 0 0 1 1.182-2.116 3.14 3.14 0 0 1 2.332-.66 3.17 3.17 0 0 1 2.777 3.515A3.15 3.15 0 0 1 9.63 9.653a3.151 3.151 0 0 1-2.332.66zM13.278 12.746l-1.733-2.192A5.122 5.122 0 0 0 12.8 7.77V7.77a5.173 5.173 0 0 0-4.53-5.733 5.111 5.111 0 0 0-3.806 1.077 5.131 5.131 0 0 0-1.929 3.452A5.174 5.174 0 0 0 7.672 12.334a5.1 5.1 0 0 0 2.287-.56l1.747 2.212 1.571-1.24z"></path></svg>
+        <svg width="16" height="16" style="fill:#27AE60" viewBox="0 0 16 16"><path d="M8 14A6 6 0 1 1 8 2a6 6 0 0 1 0 12zm0-4a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg>
+        <input type="text" class="nav-input-style" placeholder="" />
+        <label class="nav-location-label"><span>Where are you going?</span></label>
+        <svg width="16" height="16" style="fill:#27AE60" viewBox="0 0 16 16"><path d="M7.298 10.313a3.172 3.172 0 0 1-2.776-3.514 3.145 3.145 0 0 1 1.182-2.116 3.14 3.14 0 0 1 2.332-.66 3.17 3.17 0 0 1 2.777 3.515A3.15 3.15 0 0 1 9.63 9.653a3.151 3.151 0 0 1-2.332.66z"/></svg>
       </div>
-      <ul class='navlinks-header'>
+      <ul class="navlinks-header">
         <li><a href="index.html">HOME</a></li>
         <li><a href="about.html">ABOUT</a></li>
         <li><a href="team.html">TEAM</a></li>
-        <li><a href="contact.html" class="font-bold">CONTACT</a></li>
+        <li><a href="contact.html">CONTACT</a></li>
         <li><a href="newsletter.html">NEWSLETTER</a></li>
       </ul>
     </div>
     <div style="height:40px"></div>
   </header>
 
-  <main class="page-wide-section py-12">
-    <h1 class="text-4xl md:text-5xl font-extrabold mb-2">Contact RideSplits</h1>
-    <p class="text-gray-600 mb-8">Questions, partnerships, or press? Drop us a line.</p>
+  <main class="page-wide-section" style="max-width: 720px; margin: 0 auto;">
+    <h1 style="font-size:40px; font-weight:800; margin: 24px 0;">Contact RideSplits</h1>
+    <p style="margin-bottom: 24px;">Questions, partnerships, or press? Drop us a line.</p>
 
-    <form id="contact-form" class="max-w-2xl space-y-5">
-      <div>
-        <label class="block mb-2 font-semibold">Name</label>
-        <input name="name" type="text" required class="w-full border rounded px-3 py-2"/>
-      </div>
-      <div>
-        <label class="block mb-2 font-semibold">Email</label>
-        <input name="email" type="email" required class="w-full border rounded px-3 py-2"/>
-      </div>
-      <div>
-        <label class="block mb-2 font-semibold">Topic</label>
-        <select name="topic" class="w-full border rounded px-3 py-2">
-          <option value="general">General</option>
-          <option value="partnerships">Partnerships</option>
-          <option value="press">Press</option>
-          <option value="support">Support</option>
-        </select>
-      </div>
-      <div>
-        <label class="block mb-2 font-semibold">Message</label>
-        <textarea name="message" rows="6" required class="w-full border rounded px-3 py-2"></textarea>
-      </div>
-      <button class="get-the-app px-6 py-2 rounded" type="submit">Send</button>
-      <p id="contact-result" class="mt-3 text-sm"></p>
+    <form id="contactForm">
+      <label for="cName">Name</label>
+      <input id="cName" name="name" type="text" required class="input-style" style="width:100%; margin:8px 0 16px"/>
+
+      <label for="cEmail">Email</label>
+      <input id="cEmail" name="email" type="email" required class="input-style" style="width:100%; margin:8px 0 16px"/>
+
+      <label for="cTopic">Topic</label>
+      <select id="cTopic" name="topic" class="input-style" style="width:100%; margin:8px 0 16px">
+        <option>General</option>
+        <option>Partnership</option>
+        <option>Press</option>
+        <option>Support</option>
+      </select>
+
+      <label for="cMessage">Message</label>
+      <textarea id="cMessage" name="message" required rows="6" class="input-style" style="width:100%; margin:8px 0 16px"></textarea>
+
+      <button id="contactSubmit" type="submit" class="get-the-app">Send</button>
+      <div id="contactStatus" style="margin-top:12px; min-height:24px; color:#666;"></div>
     </form>
   </main>
 
-  <footer class="footer">
-    <!-- reuse your existing footer -->
-  </footer>
+  <!-- Firebase (CDN) + Firestore write -->
+  <script type="module">
+    // Firebase SDK (your correct project)
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+    import { getFirestore, addDoc, collection, serverTimestamp }
+      from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-  <script>
-    // POST to your Cloud Function via Hosting rewrite: /api/contact
-    document.getElementById('contact-form').addEventListener('submit', async (e) => {
+    const firebaseConfig = {
+      apiKey: "AIzaSyDg-HaGX3lXZWx4sleFabnUWwP9jRqB2qU",
+      authDomain: "ridesplit-site.firebaseapp.com",
+      projectId: "ridesplit-site",
+      storageBucket: "ridesplit-site.firebasestorage.app",
+      messagingSenderId: "649981553991",
+      appId: "1:649981553991:web:65254943bcf66e45c53062"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db  = getFirestore(app);
+
+    // Contact form handler
+    const form   = document.getElementById("contactForm");
+    const status = document.getElementById("contactStatus");
+    const submit = document.getElementById("contactSubmit");
+
+    const emailOk = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const result = document.getElementById('contact-result');
-      result.textContent = 'Sending...';
+      status.textContent = "";
+      submit.disabled = true; submit.textContent = "Sending…";
+
+      const name    = document.getElementById("cName").value.trim();
+      const email   = document.getElementById("cEmail").value.trim();
+      const topic   = document.getElementById("cTopic").value.trim();
+      const message = document.getElementById("cMessage").value.trim();
+
+      if (!name || !emailOk(email) || !message) {
+        status.textContent = "Please provide your name, a valid email, and a message.";
+        status.style.color = "#b00020";
+        submit.disabled = false; submit.textContent = "Send";
+        return;
+      }
+
       try {
-        const form = e.target;
-        const payload = {
-          name: form.name.value.trim(),
-          email: form.email.value.trim(),
-          topic: form.topic.value,
-          message: form.message.value.trim(),
-        };
-        const res = await fetch('/api/contact', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
+        await addDoc(collection(db, "contacts"), {
+          name, email, topic, message,
+          createdAt: serverTimestamp(),
+          ua: navigator.userAgent
         });
-        if (!res.ok) throw new Error(await res.text());
-        result.textContent = 'Thanks! We received your message.';
+        status.textContent = "Thanks! We received your message.";
+        status.style.color = "#1b5e20";
         form.reset();
       } catch (err) {
-        result.textContent = 'Sorry—something went wrong. Please try again.';
         console.error(err);
+        status.textContent = "Sorry—something went wrong. Please try again.";
+        status.style.color = "#b00020";
+      } finally {
+        submit.disabled = false; submit.textContent = "Send";
       }
     });
   </script>

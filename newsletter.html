@@ -2,76 +2,114 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Newsletter – RideSplits</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.7/tailwind.min.css" crossorigin="anonymous" />
+
+  <link rel="preload" href="style.css" as="style" />
   <link rel="stylesheet" href="style.css" />
-  <link rel="shortcut icon" href="./images/favicon.ico" />
 </head>
-<body class="bg-white text-gray-900">
-  <!-- Header (same as contact) -->
+<body>
+  <!-- Header / Nav -->
   <header class="flex flex-row justify-center">
-    <div class='navbar page-wide-section'>
+    <div class="navbar page-wide-section">
       <a href="index.html" class="rs-logo">
-        <img src="./images/android-chrome-192x192.png" class="rs-business-logo" alt="RideSplits logo">
+        <img src="./images/android-chrome-192x192.png" class="rs-business-logo" alt="RideSplits" />
       </a>
       <div class="searchbox">
-        <svg width='16' height='16' style='fill:#27AE60' viewBox='0 0 16 16'><path d="M8 14A6 6 0 1 1 8 2a6 6 0 0 1 0 12zm0-4a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path></svg>
-        <input type='text' placeholder='' class='nav-input-style'>
-        <label class='nav-location-label'><span>Where are you going?</span></label>
-        <svg width='16' height='16' fill=#27AE60 viewBox='0 0 16 16'><path d="M7.298 10.313a3.172 3.172 0 0 1-2.776-3.514 3.145 3.145 0 0 1 1.182-2.116 3.14 3.14 0 0 1 2.332-.66 3.17 3.17 0 0 1 2.777 3.515A3.15 3.15 0 0 1 9.63 9.653a3.151 3.151 0 0 1-2.332.66zM13.278 12.746l-1.733-2.192A5.122 5.122 0 0 0 12.8 7.77V7.77a5.173 5.173 0 0 0-4.53-5.733 5.111 5.111 0 0 0-3.806 1.077 5.131 5.131 0 0 0-1.929 3.452A5.174 5.174 0 0 0 7.672 12.334a5.1 5.1 0 0 0 2.287-.56l1.747 2.212 1.571-1.24z"></path></svg>
+        <svg width="16" height="16" style="fill:#27AE60" viewBox="0 0 16 16"><path d="M8 14A6 6 0 1 1 8 2a6 6 0 0 1 0 12zm0-4a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg>
+        <input type="text" class="nav-input-style" placeholder="" />
+        <label class="nav-location-label"><span>Where are you going?</span></label>
+        <svg width="16" height="16" style="fill:#27AE60" viewBox="0 0 16 16"><path d="M7.298 10.313a3.172 3.172 0 0 1-2.776-3.514 3.145 3.145 0 0 1 1.182-2.116 3.14 3.14 0 0 1 2.332-.66 3.17 3.17 0 0 1 2.777 3.515A3.15 3.15 0 0 1 9.63 9.653a3.151 3.151 0 0 1-2.332.66z"/></svg>
       </div>
-      <ul class='navlinks-header'>
+      <ul class="navlinks-header">
         <li><a href="index.html">HOME</a></li>
         <li><a href="about.html">ABOUT</a></li>
         <li><a href="team.html">TEAM</a></li>
         <li><a href="contact.html">CONTACT</a></li>
-        <li><a href="newsletter.html" class="font-bold">NEWSLETTER</a></li>
+        <li><a href="newsletter.html">NEWSLETTER</a></li>
       </ul>
     </div>
     <div style="height:40px"></div>
   </header>
 
-  <main class="page-wide-section py-12">
-    <h1 class="text-4xl md:text-5xl font-extrabold mb-2">Subscribe to the RideSplits newsletter</h1>
-    <p class="text-gray-600 mb-8">Get product updates, launch cities, and promos.</p>
+  <main class="page-wide-section" style="max-width: 720px; margin: 0 auto;">
+    <h1 style="font-size:40px; font-weight:800; margin: 24px 0;">Subscribe to the RideSplits newsletter</h1>
+    <p style="margin-bottom: 24px;">Get product updates, launch cities, and promos.</p>
 
-    <form id="newsletter-form" class="max-w-xl space-y-5">
-      <div>
-        <label class="block mb-2 font-semibold">Email</label>
-        <input name="email" type="email" required class="w-full border rounded px-3 py-2"/>
-      </div>
-      <button class="get-the-app px-6 py-2 rounded" type="submit">Subscribe</button>
-      <p id="newsletter-result" class="mt-3 text-sm"></p>
+    <form id="newsletterForm">
+      <label for="nEmail">Email</label>
+      <input id="nEmail" name="email" type="email" required class="input-style" style="width:100%; margin:8px 0 16px"/>
+
+      <button id="newsSubmit" type="submit" class="get-the-app">Subscribe</button>
+      <div id="newsStatus" style="margin-top:12px; min-height:24px; color:#666;"></div>
     </form>
   </main>
 
-  <footer class="footer">
-    <!-- reuse your existing footer -->
-  </footer>
+  <!-- Firebase (CDN) + Firestore write -->
+  <script type="module">
+    // Firebase SDK (your correct project)
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+    import { getFirestore, addDoc, collection, serverTimestamp, query, where, getDocs }
+      from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-  <script>
-    // POST to your Cloud Function via Hosting rewrite: /api/subscribe
-    document.getElementById('newsletter-form').addEventListener('submit', async (e) => {
+    const firebaseConfig = {
+      apiKey: "AIzaSyDg-HaGX3lXZWx4sleFabnUWwP9jRqB2qU",
+      authDomain: "ridesplit-site.firebaseapp.com",
+      projectId: "ridesplit-site",
+      storageBucket: "ridesplit-site.firebasestorage.app",
+      messagingSenderId: "649981553991",
+      appId: "1:649981553991:web:65254943bcf66e45c53062"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db  = getFirestore(app);
+
+    // Newsletter handler
+    const form   = document.getElementById("newsletterForm");
+    const status = document.getElementById("newsStatus");
+    const submit = document.getElementById("newsSubmit");
+
+    const emailOk = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const result = document.getElementById('newsletter-result');
-      result.textContent = 'Subscribing...';
+      status.textContent = "";
+      submit.disabled = true; submit.textContent = "Subscribing…";
+
+      const email = document.getElementById("nEmail").value.trim();
+      if (!emailOk(email)) {
+        status.textContent = "Please enter a valid email.";
+        status.style.color = "#b00020";
+        submit.disabled = false; submit.textContent = "Subscribe";
+        return;
+      }
+
       try {
-        const form = e.target;
-        const payload = { email: form.email.value.trim() };
-        const res = await fetch('/api/subscribe', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        });
-        if (!res.ok) throw new Error(await res.text());
-        result.textContent = 'Thanks! You’re on the list.';
-        form.reset();
+        // Optional: basic duplicate check
+        const q = query(collection(db, "newsletter_subscribers"), where("email", "==", email));
+        const snap = await getDocs(q);
+        if (!snap.empty) {
+          status.textContent = "You're already subscribed. Thank you!";
+          status.style.color = "#1b5e20";
+        } else {
+          await addDoc(collection(db, "newsletter_subscribers"), {
+            email,
+            createdAt: serverTimestamp(),
+            ua: navigator.userAgent
+          });
+          status.textContent = "You're in! Thanks for subscribing.";
+          status.style.color = "#1b5e20";
+          form.reset();
+        }
       } catch (err) {
-        result.textContent = 'Sorry—something went wrong. Please try again.';
         console.error(err);
+        status.textContent = "Sorry—something went wrong. Please try again.";
+        status.style.color = "#b00020";
+      } finally {
+        submit.disabled = false; submit.textContent = "Subscribe";
       }
     });
   </script>
 </body>
 </html>
+
